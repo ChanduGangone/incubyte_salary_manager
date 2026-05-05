@@ -12,14 +12,17 @@ describe('db', () => {
   });
 
   afterEach(() => {
-    closeDatabase();
     fs.rmSync(tempDir, { recursive: true, force: true });
   });
 
   it('opens the database connection', () => {
-    const dbPath = path.join(tempDir, 'test.sqlite');
-    const db = getDatabase(dbPath);
+    const db = getDatabase(path.join(tempDir, 'test.sqlite'));
 
     expect(db.prepare('SELECT 1 AS ok').get()).toEqual({ ok: 1 });
+    closeDatabase(db);
+  });
+
+  it('throws when dbPath is missing', () => {
+    expect(() => getDatabase()).toThrow('Database path is required');
   });
 });

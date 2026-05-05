@@ -21,7 +21,7 @@ describe('salary metrics service', () => {
   });
 
   afterEach(() => {
-    closeDatabase();
+    closeDatabase(db);
     fs.rmSync(tempDir, { recursive: true, force: true });
   });
 
