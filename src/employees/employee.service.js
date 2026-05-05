@@ -9,7 +9,6 @@ import { normalizeEmployeeInput } from './employee.utils.js';
 import { ValidationError } from '../errors/validation-error.js';
 
 const REQUIRED_FIELDS = ['fullName', 'jobTitle', 'country', 'salary'];
-const COUNTRY_PATTERN = /^(india|united states)$/i;
 const NAME_PATTERN = /^[A-Za-z ]+$/;
 
 function validateRequiredFields(employee) {
@@ -27,10 +26,6 @@ function validateEmployee(employee) {
 
   if (typeof normalizedEmployee.salary !== 'number' || Number.isNaN(normalizedEmployee.salary)) {
     throw new ValidationError('Salary must be a number');
-  }
-
-  if (!COUNTRY_PATTERN.test(normalizedEmployee.country)) {
-    throw new ValidationError('Country must be India or United States');
   }
 
   if (!NAME_PATTERN.test(normalizedEmployee.fullName)) {

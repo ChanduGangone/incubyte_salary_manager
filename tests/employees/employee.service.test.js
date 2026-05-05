@@ -71,15 +71,20 @@ describe('employee service', () => {
     ).toThrow(ValidationError);
   });
 
-  it('throws when country is not supported', () => {
-    expect(() =>
+  it('allows employees from other countries', () => {
+    expect(
       createEmployee(db, {
         fullName: 'Jane Doe',
         jobTitle: 'Engineer',
         country: 'Germany',
         salary: 5000
       })
-    ).toThrow(ValidationError);
+    ).toMatchObject({
+      fullName: 'Jane Doe',
+      jobTitle: 'Engineer',
+      country: 'Germany',
+      salary: 5000
+    });
   });
 
   it('throws when fullName contains invalid characters', () => {
