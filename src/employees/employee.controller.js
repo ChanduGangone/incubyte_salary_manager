@@ -32,8 +32,16 @@ export function getEmployeeByIdController({ db, employeeService }) {
   };
 }
 
-export function listEmployeesController() {
-  return undefined;
+export function listEmployeesController({ db, employeeService }) {
+  return function listEmployees(req, res) {
+    try {
+      const employees = employeeService.listEmployees(db);
+
+      return res.status(200).json(employees);
+    } catch (error) {
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  };
 }
 
 function isValidationError(error) {

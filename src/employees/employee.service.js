@@ -1,4 +1,8 @@
-import { createEmployee as createEmployeeRecord, getEmployeeById as getEmployeeByIdRecord } from './employee.repository.js';
+import {
+  createEmployee as createEmployeeRecord,
+  getEmployeeById as getEmployeeByIdRecord,
+  listEmployees as listEmployeesRecord
+} from './employee.repository.js';
 import { normalizeEmployeeInput } from './employee.utils.js';
 import { ValidationError } from '../errors/validation-error.js';
 
@@ -58,4 +62,12 @@ export function getEmployeeById(db, id) {
   }
 
   return getEmployeeByIdRecord(db, id);
+}
+
+export function listEmployees(db) {
+  if (!db) {
+    throw new Error('Unable to fetch employees');
+  }
+
+  return listEmployeesRecord(db);
 }

@@ -28,6 +28,10 @@ function mapRowToEmployee(row) {
   };
 }
 
+function mapRowsToEmployees(rows) {
+  return rows.map(mapRowToEmployee);
+}
+
 export function createEmployee(db, employee) {
   assertDatabase(db);
   assertEmployeeInput(employee);
@@ -59,4 +63,18 @@ export function getEmployeeById(db, id) {
     .get(id);
 
   return mapRowToEmployee(row);
+}
+
+export function listEmployees(db) {
+  assertDatabase(db);
+
+  const rows = db
+    .prepare(
+      `SELECT id, full_name, job_title, country, salary
+       FROM employees
+       ORDER BY id ASC`
+    )
+    .all();
+
+  return mapRowsToEmployees(rows);
 }
