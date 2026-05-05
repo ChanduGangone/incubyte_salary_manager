@@ -6,16 +6,16 @@ function assertDatabase(db) {
   }
 }
 
-function normalizeCountry(country) {
-  return String(country || '').trim().toLowerCase();
+function normalizeText(value) {
+  return String(value || '').trim().toLowerCase();
 }
 
 export function getSalaryMetricsByCountry(db, country) {
   assertDatabase(db);
 
-  const targetCountry = normalizeCountry(country);
+  const targetCountry = normalizeText(country);
   const employees = listEmployees(db);
-  const matchingEmployees = employees.filter((employee) => normalizeCountry(employee.country) === targetCountry);
+  const matchingEmployees = employees.filter((employee) => normalizeText(employee.country) === targetCountry);
 
   if (matchingEmployees.length === 0) {
     return undefined;
@@ -32,10 +32,20 @@ export function getSalaryMetricsByCountry(db, country) {
 }
 
 export function getSalaryMetricsByJobTitle(db, jobTitle) {
-  void db;
-  void jobTitle;
+  assertDatabase(db);
 
-  listEmployees(db);
+  const targetJobTitle = normalizeText(jobTitle);
+  const employees = listEmployees(db);
+  const matchingEmployees = employees.filter((employee) => normalizeText(employee.jobTitle) === targetJobTitle);
 
-  return undefined;
+  if (matchingEmployees.length === 0) {
+    return undefined;
+  }
+
+  const salaries = matchingEmployees.map((employee) => employee.salary);
+  const totalSalary = salaries.reduce((sum, salary) => sum + salary, 0);
+
+  return {
+    averageSalary: totalSalary / salaries.length
+  };
 }
