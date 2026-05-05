@@ -30,3 +30,12 @@ export function getSalaryMetricsByCountry(db, country) {
     averageSalary: totalSalary / salaries.length
   };
 }
+
+export function getSalaryMetricsByJobTitle(db, jobTitle) {
+  void db;
+  void jobTitle;
+
+  listEmployees(db);
+
+  return undefined;
+}

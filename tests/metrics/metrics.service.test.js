@@ -6,7 +6,10 @@ import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
 
 import { closeDatabase, getDatabase } from '../../src/db/index.js';
 import { createEmployee } from '../../src/employees/employee.repository.js';
-import { getSalaryMetricsByCountry } from '../../src/metrics/metrics.service.js';
+import {
+  getSalaryMetricsByCountry,
+  getSalaryMetricsByJobTitle
+} from '../../src/metrics/metrics.service.js';
 
 describe('salary metrics service', () => {
   let tempDir;
@@ -51,5 +54,34 @@ describe('salary metrics service', () => {
 
   it('returns undefined when no employees match the country', () => {
     expect(getSalaryMetricsByCountry(db, 'India')).toBeUndefined();
+  });
+
+  it('returns average salary for a job title', () => {
+    createEmployee(db, {
+      fullName: 'Jane Doe',
+      jobTitle: 'Engineer',
+      country: 'India',
+      salary: 5000
+    });
+    createEmployee(db, {
+      fullName: 'John Doe',
+      jobTitle: 'Engineer',
+      country: 'United States',
+      salary: 7000
+    });
+    createEmployee(db, {
+      fullName: 'Alice Doe',
+      jobTitle: 'Manager',
+      country: 'India',
+      salary: 10000
+    });
+
+    expect(getSalaryMetricsByJobTitle(db, 'Engineer')).toEqual({
+      averageSalary: 6000
+    });
+  });
+
+  it('returns undefined when no employees match the job title', () => {
+    expect(getSalaryMetricsByJobTitle(db, 'Engineer')).toBeUndefined();
   });
 });
