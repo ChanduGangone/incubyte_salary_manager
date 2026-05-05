@@ -35,4 +35,60 @@ describe('employee controller', () => {
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith(employee);
   });
+
+  it('returns 400 when validation fails', () => {
+    const service = {
+      createEmployee: jest.fn().mockImplementation(() => {
+        throw new Error('Missing required field: fullName');
+      })
+    };
+    const req = {
+      body: {
+        jobTitle: 'Engineer',
+        country: 'India',
+        salary: 5000
+      }
+    };
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn()
+    };
+
+    const handler = createEmployeeController({ db: {}, employeeService: service });
+    handler(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      error: 'Missing required field: fullName'
+    });
+  });
+
+  it('returns 500 when the service throws an unexpected error', () => {
+    const service = {
+      createEmployee: jest.fn().mockImplementation(() => {
+        throw new Error('Database connection is required');
+      })
+    };
+    const db = {};
+    const req = {
+      body: {
+        fullName: 'Jane Doe',
+        jobTitle: 'Engineer',
+        country: 'India',
+        salary: 5000
+      }
+    };
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn()
+    };
+
+    const handler = createEmployeeController({ db, employeeService: service });
+    handler(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
+      error: 'Internal server error'
+    });
+  });
 });
