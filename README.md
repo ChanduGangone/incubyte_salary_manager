@@ -31,6 +31,7 @@ PORT=4000 DATABASE_PATH=./data/salary-manager.sqlite npm start
 
 If `PORT` is invalid, the app fails fast during startup instead of binding to a broken value.
 The server loads `.env` automatically through `dotenv`, so you can also create a local `.env` file with the same variables.
+The database path is resolved once at startup and the app opens one SQLite connection for that process.
 
 ## Setup
 
@@ -50,7 +51,7 @@ Start the API server:
 npm start
 ```
 
-The server listens on the default port configured in `src/server.js`.
+The server listens on the configured port and closes the SQLite connection on `SIGINT` or `SIGTERM`.
 
 You can override the runtime configuration through environment variables:
 
@@ -108,6 +109,8 @@ Each employee record stores:
 - country
 - salary
 
+Employees may belong to any country. Country-specific rules only apply to salary deduction and salary metrics logic.
+
 The CRUD flow is:
 
 1. controller receives the HTTP request
@@ -140,6 +143,13 @@ Salary metrics are computed from employee data already stored in SQLite.
 
 The application uses SQLite for persistence. The database file is created automatically at runtime if it does not exist.
 
+Database lifecycle:
+
+- `src/server.js` resolves `PORT` and `DATABASE_PATH` from config
+- `src/server.js` opens the SQLite connection once at startup
+- `src/app.js` receives the database instance through dependency injection
+- the process closes the database on `SIGINT` and `SIGTERM`
+
 The database layer is intentionally small so the rest of the code can stay focused on domain behavior and HTTP mapping.
 
 ## Implementation Details
@@ -152,6 +162,8 @@ The database layer is intentionally small so the rest of the code can stay focus
   - services contain validation, normalization, and domain behavior
   - repositories handle SQL only
   - each feature was implemented end to end in red/green commits
+- A review comment about country validation was addressed so employee creation supports any country, while salary deduction rules remain country-specific in the salary endpoint.
+- A review comment about database lifecycle was addressed by moving DB creation to startup, making `dbPath` explicit, and adding graceful shutdown hooks.
 - I reviewed and adjusted the AI-generated code after each slice by running the test suite and tightening the design when suggestions were too broad or too coupled.
 - Tests are written with Jest and focus on observable behavior rather than internal implementation details.
 - The config layer keeps runtime concerns like `PORT` and `DATABASE_PATH` separate from business logic.
