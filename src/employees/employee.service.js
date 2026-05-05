@@ -74,18 +74,20 @@ export function listEmployees(db) {
   return listEmployeesRecord(db);
 }
 
-export function updateEmployee(db) {
+export function updateEmployee(db, id, employee) {
   if (!db) {
     throw new Error('Unable to update employee');
   }
 
-  return updateEmployeeRecord(db);
+  const normalizedEmployee = validateEmployee(employee);
+
+  return updateEmployeeRecord(db, id, normalizedEmployee);
 }
 
-export function deleteEmployee(db) {
+export function deleteEmployee(db, id) {
   if (!db) {
     throw new Error('Unable to delete employee');
   }
 
-  return deleteEmployeeRecord(db);
+  return deleteEmployeeRecord(db, id);
 }

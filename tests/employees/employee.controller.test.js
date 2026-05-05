@@ -297,6 +297,7 @@ describe('employee controller', () => {
     };
     const res = {
       status: jest.fn().mockReturnThis(),
+      end: jest.fn().mockReturnThis(),
       json: jest.fn()
     };
 
@@ -305,6 +306,7 @@ describe('employee controller', () => {
 
     expect(service.deleteEmployee).toHaveBeenCalledWith(db, '1');
     expect(res.status).toHaveBeenCalledWith(204);
+    expect(res.end).toHaveBeenCalled();
     expect(res.json).not.toHaveBeenCalled();
   });
 
@@ -318,6 +320,7 @@ describe('employee controller', () => {
     };
     const res = {
       status: jest.fn().mockReturnThis(),
+      end: jest.fn().mockReturnThis(),
       json: jest.fn()
     };
 

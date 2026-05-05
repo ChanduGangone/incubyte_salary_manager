@@ -32,6 +32,15 @@ function mapRowsToEmployees(rows) {
   return rows.map(mapRowToEmployee);
 }
 
+function mapUpdateArgs(employee) {
+  return [
+    employee.fullName,
+    employee.jobTitle,
+    employee.country,
+    employee.salary
+  ];
+}
+
 export function createEmployee(db, employee) {
   assertDatabase(db);
   assertEmployeeInput(employee);
@@ -79,10 +88,30 @@ export function listEmployees(db) {
   return mapRowsToEmployees(rows);
 }
 
-export function updateEmployee() {
-  return undefined;
+export function updateEmployee(db, id, employee) {
+  assertDatabase(db);
+  assertEmployeeInput(employee);
+
+  const statement = db.prepare(
+    `UPDATE employees
+     SET full_name = ?, job_title = ?, country = ?, salary = ?
+     WHERE id = ?`
+  );
+
+  const result = statement.run(...mapUpdateArgs(employee), id);
+
+  if (result.changes === 0) {
+    return undefined;
+  }
+
+  return getEmployeeById(db, id);
 }
 
-export function deleteEmployee() {
-  return undefined;
+export function deleteEmployee(db, id) {
+  assertDatabase(db);
+
+  const statement = db.prepare(`DELETE FROM employees WHERE id = ?`);
+  const result = statement.run(id);
+
+  return result.changes > 0;
 }

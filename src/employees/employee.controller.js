@@ -44,12 +44,40 @@ export function listEmployeesController({ db, employeeService }) {
   };
 }
 
-export function updateEmployeeController() {
-  return undefined;
+export function updateEmployeeController({ db, employeeService }) {
+  return function updateEmployee(req, res) {
+    try {
+      const employee = employeeService.updateEmployee(db, req.params.id, req.body);
+
+      if (!employee) {
+        return res.status(404).json({ error: 'Employee not found' });
+      }
+
+      return res.status(200).json(employee);
+    } catch (error) {
+      if (isValidationError(error)) {
+        return res.status(400).json({ error: error.message });
+      }
+
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  };
 }
 
-export function deleteEmployeeController() {
-  return undefined;
+export function deleteEmployeeController({ db, employeeService }) {
+  return function deleteEmployee(req, res) {
+    try {
+      const deleted = employeeService.deleteEmployee(db, req.params.id);
+
+      if (!deleted) {
+        return res.status(404).json({ error: 'Employee not found' });
+      }
+
+      return res.status(204).end();
+    } catch (error) {
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  };
 }
 
 function isValidationError(error) {
