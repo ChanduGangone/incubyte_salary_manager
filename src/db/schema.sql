@@ -3,5 +3,5 @@ CREATE TABLE IF NOT EXISTS employees (
   full_name TEXT NOT NULL,
   job_title TEXT NOT NULL,
   country TEXT NOT NULL,
-  salary REAL NOT NULL CHECK (salary >= 0)
+  salary REAL NOT NULL
 );

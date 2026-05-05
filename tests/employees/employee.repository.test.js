@@ -91,4 +91,8 @@ describe('employee repository', () => {
   it('throws when db is missing for getEmployeeById', () => {
     expect(() => getEmployeeById(undefined, 1)).toThrow();
   });
+
+  it('returns undefined when employee does not exist', () => {
+    expect(getEmployeeById(db, 9999)).toBeUndefined();
+  });
 });
