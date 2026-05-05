@@ -4,7 +4,9 @@ import { ValidationError } from '../../src/errors/validation-error.js';
 import {
   createEmployeeController,
   getEmployeeByIdController,
-  listEmployeesController
+  listEmployeesController,
+  updateEmployeeController,
+  deleteEmployeeController
 } from '../../src/employees/employee.controller.js';
 
 describe('employee controller', () => {
@@ -219,6 +221,113 @@ describe('employee controller', () => {
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({
       error: 'Internal server error'
+    });
+  });
+
+  it('returns 200 when an employee is updated', () => {
+    const employee = {
+      id: 1,
+      fullName: 'Jane Doe',
+      jobTitle: 'Senior Engineer',
+      country: 'India',
+      salary: 6000
+    };
+    const service = {
+      updateEmployee: jest.fn().mockReturnValue(employee)
+    };
+    const db = {};
+    const req = {
+      params: { id: '1' },
+      body: {
+        fullName: 'Jane Doe',
+        jobTitle: 'Senior Engineer',
+        country: 'India',
+        salary: 6000
+      }
+    };
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn()
+    };
+
+    const handler = updateEmployeeController({ db, employeeService: service });
+    handler(req, res);
+
+    expect(service.updateEmployee).toHaveBeenCalledWith(db, '1', req.body);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(employee);
+  });
+
+  it('returns 404 when an employee to update is not found', () => {
+    const service = {
+      updateEmployee: jest.fn().mockReturnValue(undefined)
+    };
+    const db = {};
+    const req = {
+      params: { id: '999' },
+      body: {
+        fullName: 'Jane Doe',
+        jobTitle: 'Senior Engineer',
+        country: 'India',
+        salary: 6000
+      }
+    };
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn()
+    };
+
+    const handler = updateEmployeeController({ db, employeeService: service });
+    handler(req, res);
+
+    expect(service.updateEmployee).toHaveBeenCalledWith(db, '999', req.body);
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith({
+      error: 'Employee not found'
+    });
+  });
+
+  it('returns 204 when an employee is deleted', () => {
+    const service = {
+      deleteEmployee: jest.fn().mockReturnValue(true)
+    };
+    const db = {};
+    const req = {
+      params: { id: '1' }
+    };
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn()
+    };
+
+    const handler = deleteEmployeeController({ db, employeeService: service });
+    handler(req, res);
+
+    expect(service.deleteEmployee).toHaveBeenCalledWith(db, '1');
+    expect(res.status).toHaveBeenCalledWith(204);
+    expect(res.json).not.toHaveBeenCalled();
+  });
+
+  it('returns 404 when an employee to delete is not found', () => {
+    const service = {
+      deleteEmployee: jest.fn().mockReturnValue(false)
+    };
+    const db = {};
+    const req = {
+      params: { id: '999' }
+    };
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn()
+    };
+
+    const handler = deleteEmployeeController({ db, employeeService: service });
+    handler(req, res);
+
+    expect(service.deleteEmployee).toHaveBeenCalledWith(db, '999');
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith({
+      error: 'Employee not found'
     });
   });
 });

@@ -44,6 +44,14 @@ export function listEmployeesController({ db, employeeService }) {
   };
 }
 
+export function updateEmployeeController() {
+  return undefined;
+}
+
+export function deleteEmployeeController() {
+  return undefined;
+}
+
 function isValidationError(error) {
   return error instanceof ValidationError;
 }

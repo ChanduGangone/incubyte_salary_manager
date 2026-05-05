@@ -6,7 +6,9 @@ describe('employee routes', () => {
   it('registers employee routes', () => {
     const router = {
       post: jest.fn(),
-      get: jest.fn()
+      get: jest.fn(),
+      put: jest.fn(),
+      delete: jest.fn()
     };
 
     const routes = createEmployeeRoutes({ router });
@@ -19,12 +21,28 @@ describe('employee routes', () => {
   it('registers employee list route', () => {
     const router = {
       post: jest.fn(),
-      get: jest.fn()
+      get: jest.fn(),
+      put: jest.fn(),
+      delete: jest.fn()
     };
 
     createEmployeeRoutes({ router });
 
     expect(router.get).toHaveBeenCalledWith('/', expect.any(Function));
     expect(router.get).toHaveBeenCalledWith('/:id', expect.any(Function));
+  });
+
+  it('registers update and delete routes', () => {
+    const router = {
+      post: jest.fn(),
+      get: jest.fn(),
+      put: jest.fn(),
+      delete: jest.fn()
+    };
+
+    createEmployeeRoutes({ router });
+
+    expect(router.put).toHaveBeenCalledWith('/:id', expect.any(Function));
+    expect(router.delete).toHaveBeenCalledWith('/:id', expect.any(Function));
   });
 });

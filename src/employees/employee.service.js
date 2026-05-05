@@ -1,7 +1,9 @@
 import {
   createEmployee as createEmployeeRecord,
   getEmployeeById as getEmployeeByIdRecord,
-  listEmployees as listEmployeesRecord
+  listEmployees as listEmployeesRecord,
+  updateEmployee as updateEmployeeRecord,
+  deleteEmployee as deleteEmployeeRecord
 } from './employee.repository.js';
 import { normalizeEmployeeInput } from './employee.utils.js';
 import { ValidationError } from '../errors/validation-error.js';
@@ -70,4 +72,20 @@ export function listEmployees(db) {
   }
 
   return listEmployeesRecord(db);
+}
+
+export function updateEmployee(db) {
+  if (!db) {
+    throw new Error('Unable to update employee');
+  }
+
+  return updateEmployeeRecord(db);
+}
+
+export function deleteEmployee(db) {
+  if (!db) {
+    throw new Error('Unable to delete employee');
+  }
+
+  return deleteEmployeeRecord(db);
 }

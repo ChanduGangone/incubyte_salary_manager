@@ -78,3 +78,11 @@ export function listEmployees(db) {
 
   return mapRowsToEmployees(rows);
 }
+
+export function updateEmployee() {
+  return undefined;
+}
+
+export function deleteEmployee() {
+  return undefined;
+}

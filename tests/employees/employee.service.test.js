@@ -3,7 +3,7 @@ import os from 'node:os';
 import path from 'node:path';
 
 import { closeDatabase, getDatabase } from '../../src/db/index.js';
-import { createEmployee } from '../../src/employees/employee.service.js';
+import { createEmployee, deleteEmployee, updateEmployee } from '../../src/employees/employee.service.js';
 import { ValidationError } from '../../src/errors/validation-error.js';
 
 describe('employee service', () => {
@@ -113,5 +113,55 @@ describe('employee service', () => {
         salary: 5000
       })
     ).toThrow('Unable to create employee');
+  });
+
+  it('updates an employee record', () => {
+    const createdEmployee = createEmployee(db, {
+      fullName: 'Jane Doe',
+      jobTitle: 'Engineer',
+      country: 'India',
+      salary: 5000
+    });
+
+    const updatedEmployee = updateEmployee(db, createdEmployee.id, {
+      fullName: 'Jane Doe',
+      jobTitle: 'Senior Engineer',
+      country: 'India',
+      salary: 6000
+    });
+
+    expect(updatedEmployee).toMatchObject({
+      id: createdEmployee.id,
+      fullName: 'Jane Doe',
+      jobTitle: 'Senior Engineer',
+      country: 'India',
+      salary: 6000
+    });
+  });
+
+  it('throws when db is missing for updateEmployee', () => {
+    expect(() =>
+      updateEmployee(undefined, 1, {
+        fullName: 'Jane Doe',
+        jobTitle: 'Senior Engineer',
+        country: 'India',
+        salary: 6000
+      })
+    ).toThrow('Unable to update employee');
+  });
+
+  it('deletes an employee record', () => {
+    const createdEmployee = createEmployee(db, {
+      fullName: 'Jane Doe',
+      jobTitle: 'Engineer',
+      country: 'India',
+      salary: 5000
+    });
+
+    expect(deleteEmployee(db, createdEmployee.id)).toBe(true);
+  });
+
+  it('throws when db is missing for deleteEmployee', () => {
+    expect(() => deleteEmployee(undefined, 1)).toThrow('Unable to delete employee');
   });
 });
