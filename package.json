@@ -8,6 +8,7 @@
     "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js"
   },
   "dependencies": {
+    "dotenv": "^17.4.2",
     "express": "^4.21.0"
   },
   "devDependencies": {

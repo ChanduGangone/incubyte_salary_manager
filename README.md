@@ -30,6 +30,7 @@ PORT=4000 DATABASE_PATH=./data/salary-manager.sqlite npm start
 ```
 
 If `PORT` is invalid, the app fails fast during startup instead of binding to a broken value.
+The server loads `.env` automatically through `dotenv`, so you can also create a local `.env` file with the same variables.
 
 ## Setup
 
