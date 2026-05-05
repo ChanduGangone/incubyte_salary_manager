@@ -16,6 +16,22 @@ export function createEmployeeController({ db, employeeService }) {
   };
 }
 
+export function getEmployeeByIdController({ db, employeeService }) {
+  return function getEmployeeById(req, res) {
+    try {
+      const employee = employeeService.getEmployeeById(db, req.params.id);
+
+      if (!employee) {
+        return res.status(404).json({ error: 'Employee not found' });
+      }
+
+      return res.status(200).json(employee);
+    } catch (error) {
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+}
+
 function isValidationError(error) {
   return error instanceof ValidationError;
 }

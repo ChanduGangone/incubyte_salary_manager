@@ -6,11 +6,13 @@ describe('employee routes', () => {
   it('registers employee routes', () => {
     const router = {
       post: jest.fn(),
+      get: jest.fn()
     };
 
     const routes = createEmployeeRoutes({ router });
 
     expect(routes).toBe(router);
     expect(router.post).toHaveBeenCalled();
+    expect(router.get).toHaveBeenCalled();
   });
 });
