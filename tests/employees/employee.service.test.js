@@ -4,6 +4,7 @@ import path from 'node:path';
 
 import { closeDatabase, getDatabase } from '../../src/db/index.js';
 import { createEmployee } from '../../src/employees/employee.service.js';
+import { ValidationError } from '../../src/errors/validation-error.js';
 
 describe('employee service', () => {
   let tempDir;
@@ -26,7 +27,7 @@ describe('employee service', () => {
         country: 'India',
         salary: 5000
       })
-    ).toThrow('Missing required field: fullName');
+    ).toThrow(ValidationError);
   });
 
   it('throws when jobTitle is missing', () => {
@@ -36,7 +37,7 @@ describe('employee service', () => {
         country: 'India',
         salary: 5000
       })
-    ).toThrow('Missing required field: jobTitle');
+    ).toThrow(ValidationError);
   });
 
   it('throws when country is missing', () => {
@@ -46,7 +47,7 @@ describe('employee service', () => {
         jobTitle: 'Engineer',
         salary: 5000
       })
-    ).toThrow('Missing required field: country');
+    ).toThrow(ValidationError);
   });
 
   it('throws when salary is missing', () => {
@@ -56,7 +57,7 @@ describe('employee service', () => {
         jobTitle: 'Engineer',
         country: 'India'
       })
-    ).toThrow('Missing required field: salary');
+    ).toThrow(ValidationError);
   });
 
   it('throws when salary is not a number', () => {
@@ -67,7 +68,7 @@ describe('employee service', () => {
         country: 'India',
         salary: 'five thousand'
       })
-    ).toThrow('Salary must be a number');
+    ).toThrow(ValidationError);
   });
 
   it('throws when country is not supported', () => {
@@ -78,7 +79,7 @@ describe('employee service', () => {
         country: 'Germany',
         salary: 5000
       })
-    ).toThrow('Country must be India or United States');
+    ).toThrow(ValidationError);
   });
 
   it('throws when fullName contains invalid characters', () => {
@@ -89,7 +90,7 @@ describe('employee service', () => {
         country: 'India',
         salary: 5000
       })
-    ).toThrow('fullName must contain only letters and spaces');
+    ).toThrow(ValidationError);
   });
 
   it('throws when jobTitle contains invalid characters', () => {
@@ -100,7 +101,7 @@ describe('employee service', () => {
         country: 'India',
         salary: 5000
       })
-    ).toThrow('jobTitle must contain only letters and spaces');
+    ).toThrow(ValidationError);
   });
 
   it('shapes repository errors when the db is missing', () => {

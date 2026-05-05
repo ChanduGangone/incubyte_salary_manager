@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
 
+import { ValidationError } from '../../src/errors/validation-error.js';
 import { createEmployeeController } from '../../src/employees/employee.controller.js';
 
 describe('employee controller', () => {
@@ -39,7 +40,7 @@ describe('employee controller', () => {
   it('returns 400 when validation fails', () => {
     const service = {
       createEmployee: jest.fn().mockImplementation(() => {
-        throw new Error('Missing required field: fullName');
+        throw new ValidationError('Missing required field: fullName');
       })
     };
     const req = {
