@@ -15,4 +15,16 @@ describe('employee routes', () => {
     expect(router.post).toHaveBeenCalled();
     expect(router.get).toHaveBeenCalled();
   });
+
+  it('registers employee list route', () => {
+    const router = {
+      post: jest.fn(),
+      get: jest.fn()
+    };
+
+    createEmployeeRoutes({ router });
+
+    expect(router.get).toHaveBeenCalledWith('/', expect.any(Function));
+    expect(router.get).toHaveBeenCalledWith('/:id', expect.any(Function));
+  });
 });

@@ -1,7 +1,11 @@
 import { jest } from '@jest/globals';
 
 import { ValidationError } from '../../src/errors/validation-error.js';
-import { createEmployeeController, getEmployeeByIdController } from '../../src/employees/employee.controller.js';
+import {
+  createEmployeeController,
+  getEmployeeByIdController,
+  listEmployeesController
+} from '../../src/employees/employee.controller.js';
 
 describe('employee controller', () => {
   it('creates an employee and responds with 201', () => {
@@ -160,6 +164,56 @@ describe('employee controller', () => {
     };
 
     const handler = getEmployeeByIdController({ db, employeeService: service });
+    handler(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
+      error: 'Internal server error'
+    });
+  });
+
+  it('returns 200 with all employees', () => {
+    const employees = [
+      {
+        id: 1,
+        fullName: 'Jane Doe',
+        jobTitle: 'Engineer',
+        country: 'India',
+        salary: 5000
+      }
+    ];
+    const service = {
+      listEmployees: jest.fn().mockReturnValue(employees)
+    };
+    const db = {};
+    const req = {};
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn()
+    };
+
+    const handler = listEmployeesController({ db, employeeService: service });
+    handler(req, res);
+
+    expect(service.listEmployees).toHaveBeenCalledWith(db);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(employees);
+  });
+
+  it('returns 500 when listEmployees throws an unexpected error', () => {
+    const service = {
+      listEmployees: jest.fn().mockImplementation(() => {
+        throw new Error('Database connection is required');
+      })
+    };
+    const db = {};
+    const req = {};
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn()
+    };
+
+    const handler = listEmployeesController({ db, employeeService: service });
     handler(req, res);
 
     expect(res.status).toHaveBeenCalledWith(500);

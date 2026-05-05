@@ -32,6 +32,10 @@ export function getEmployeeByIdController({ db, employeeService }) {
   };
 }
 
+export function listEmployeesController() {
+  return undefined;
+}
+
 function isValidationError(error) {
   return error instanceof ValidationError;
 }
