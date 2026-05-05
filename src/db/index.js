@@ -2,10 +2,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { getConfig } from '../config.js';
+
 let database;
 const schemaPath = fileURLToPath(new URL('./schema.sql', import.meta.url));
 
-export function getDatabase(dbPath = process.env.DATABASE_PATH || path.join(process.cwd(), 'data', 'salary-manager.sqlite')) {
+export function getDatabase(dbPath = getConfig().databasePath) {
   if (!database) {
     const sqliteModule = process.getBuiltinModule('node:sqlite');
 
