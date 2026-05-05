@@ -1,10 +1,19 @@
+function isNotFoundResult(result) {
+  return result === undefined;
+}
+
 export function getSalaryMetricsByCountryController({ db, metricsService }) {
   return function getSalaryMetricsByCountry(req, res) {
-    void db;
-    void metricsService;
-    void req;
-    void res;
+    try {
+      const metrics = metricsService.getSalaryMetricsByCountry(db, req.params.country);
 
-    return undefined;
+      if (isNotFoundResult(metrics)) {
+        return res.status(404).json({ error: 'Country not found' });
+      }
+
+      return res.status(200).json(metrics);
+    } catch (error) {
+      return res.status(500).json({ error: 'Internal server error' });
+    }
   };
 }
