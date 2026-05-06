@@ -61,12 +61,12 @@ export function getEmployeeById(db, id) {
   return getEmployeeByIdRecord(db, id);
 }
 
-export function listEmployees(db) {
+export function listEmployees(db, filters = {}) {
   if (!db) {
     throw new Error('Unable to fetch employees');
   }
 
-  return listEmployeesRecord(db);
+  return listEmployeesRecord(db, filters);
 }
 
 export function updateEmployee(db, id, employee) {

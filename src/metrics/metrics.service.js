@@ -14,8 +14,11 @@ export function getSalaryMetricsByCountry(db, country) {
   assertDatabase(db);
 
   const targetCountry = normalizeText(country);
-  const employees = listEmployees(db);
-  const matchingEmployees = employees.filter((employee) => normalizeText(employee.country) === targetCountry);
+  if (!targetCountry) {
+    return undefined;
+  }
+
+  const matchingEmployees = listEmployees(db, { country: targetCountry });
 
   if (matchingEmployees.length === 0) {
     return undefined;
@@ -35,8 +38,11 @@ export function getSalaryMetricsByJobTitle(db, jobTitle) {
   assertDatabase(db);
 
   const targetJobTitle = normalizeText(jobTitle);
-  const employees = listEmployees(db);
-  const matchingEmployees = employees.filter((employee) => normalizeText(employee.jobTitle) === targetJobTitle);
+  if (!targetJobTitle) {
+    return undefined;
+  }
+
+  const matchingEmployees = listEmployees(db, { jobTitle: targetJobTitle });
 
   if (matchingEmployees.length === 0) {
     return undefined;

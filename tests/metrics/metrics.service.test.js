@@ -56,6 +56,10 @@ describe('salary metrics service', () => {
     expect(getSalaryMetricsByCountry(db, 'India')).toBeUndefined();
   });
 
+  it('returns undefined when country is blank', () => {
+    expect(getSalaryMetricsByCountry(db, '   ')).toBeUndefined();
+  });
+
   it('returns average salary for a job title', () => {
     createEmployee(db, {
       fullName: 'Jane Doe',
@@ -83,5 +87,9 @@ describe('salary metrics service', () => {
 
   it('returns undefined when no employees match the job title', () => {
     expect(getSalaryMetricsByJobTitle(db, 'Engineer')).toBeUndefined();
+  });
+
+  it('returns undefined when job title is blank', () => {
+    expect(getSalaryMetricsByJobTitle(db, '')).toBeUndefined();
   });
 });

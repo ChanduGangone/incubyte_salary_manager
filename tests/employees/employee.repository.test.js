@@ -7,6 +7,7 @@ import {
   createEmployee,
   deleteEmployee,
   getEmployeeById,
+  listEmployees,
   updateEmployee
 } from '../../src/employees/employee.repository.js';
 
@@ -99,6 +100,40 @@ describe('employee repository', () => {
 
   it('returns undefined when employee does not exist', () => {
     expect(getEmployeeById(db, 9999)).toBeUndefined();
+  });
+
+  it('lists employees filtered by country', () => {
+    const jane = createEmployee(db, {
+      fullName: 'Jane Doe',
+      jobTitle: 'Engineer',
+      country: 'India',
+      salary: 5000
+    });
+    createEmployee(db, {
+      fullName: 'John Doe',
+      jobTitle: 'Engineer',
+      country: 'United States',
+      salary: 7000
+    });
+
+    expect(listEmployees(db, { country: 'India' })).toEqual([jane]);
+  });
+
+  it('lists employees filtered by multiple fields', () => {
+    const jane = createEmployee(db, {
+      fullName: 'Jane Doe',
+      jobTitle: 'Engineer',
+      country: 'India',
+      salary: 5000
+    });
+    createEmployee(db, {
+      fullName: 'Jane Doe',
+      jobTitle: 'Manager',
+      country: 'India',
+      salary: 7000
+    });
+
+    expect(listEmployees(db, { fullName: 'Jane Doe', jobTitle: 'Engineer' })).toEqual([jane]);
   });
 
   it('updates an existing employee record', () => {

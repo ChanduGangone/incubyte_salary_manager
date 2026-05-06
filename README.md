@@ -111,6 +111,13 @@ Each employee record stores:
 
 Employees may belong to any country. Country-specific rules only apply to salary deduction and salary metrics logic.
 
+`GET /employees` accepts optional query params for server-side filtering:
+
+- `fullName`
+- `jobTitle`
+- `country`
+- `salary`
+
 The CRUD flow is:
 
 1. controller receives the HTTP request
@@ -138,6 +145,8 @@ Salary metrics are computed from employee data already stored in SQLite.
 
 - by country: minimum, maximum, and average salary
 - by job title: average salary
+
+The metrics endpoints reuse repository-side filtering instead of loading the full table and filtering in memory.
 
 ## Database
 

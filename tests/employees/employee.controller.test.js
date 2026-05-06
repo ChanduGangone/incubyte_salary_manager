@@ -188,7 +188,9 @@ describe('employee controller', () => {
       listEmployees: jest.fn().mockReturnValue(employees)
     };
     const db = {};
-    const req = {};
+    const req = {
+      query: {}
+    };
     const res = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn()
@@ -197,7 +199,32 @@ describe('employee controller', () => {
     const handler = listEmployeesController({ db, employeeService: service });
     handler(req, res);
 
-    expect(service.listEmployees).toHaveBeenCalledWith(db);
+    expect(service.listEmployees).toHaveBeenCalledWith(db, req.query);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(employees);
+  });
+
+  it('passes query params to listEmployees', () => {
+    const employees = [];
+    const service = {
+      listEmployees: jest.fn().mockReturnValue(employees)
+    };
+    const db = {};
+    const req = {
+      query: {
+        country: 'India',
+        jobTitle: 'Engineer'
+      }
+    };
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn()
+    };
+
+    const handler = listEmployeesController({ db, employeeService: service });
+    handler(req, res);
+
+    expect(service.listEmployees).toHaveBeenCalledWith(db, req.query);
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith(employees);
   });

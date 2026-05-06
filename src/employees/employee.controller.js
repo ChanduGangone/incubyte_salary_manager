@@ -35,7 +35,7 @@ export function getEmployeeByIdController({ db, employeeService }) {
 export function listEmployeesController({ db, employeeService }) {
   return function listEmployees(req, res) {
     try {
-      const employees = employeeService.listEmployees(db);
+      const employees = employeeService.listEmployees(db, req.query);
 
       return res.status(200).json(employees);
     } catch (error) {

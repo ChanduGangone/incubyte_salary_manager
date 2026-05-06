@@ -41,6 +41,58 @@ function mapUpdateArgs(employee) {
   ];
 }
 
+function normalizeFilterValue(value) {
+  if (value === undefined || value === null) {
+    return undefined;
+  }
+
+  if (Array.isArray(value)) {
+    return normalizeFilterValue(value[0]);
+  }
+
+  const normalizedValue = String(value).trim();
+
+  return normalizedValue === '' ? undefined : normalizedValue;
+}
+
+function buildListEmployeesQuery(filters = {}) {
+  const clauses = [];
+  const params = [];
+
+  const fullName = normalizeFilterValue(filters.fullName);
+  if (fullName !== undefined) {
+    clauses.push('LOWER(TRIM(full_name)) = LOWER(TRIM(?))');
+    params.push(fullName);
+  }
+
+  const jobTitle = normalizeFilterValue(filters.jobTitle);
+  if (jobTitle !== undefined) {
+    clauses.push('LOWER(TRIM(job_title)) = LOWER(TRIM(?))');
+    params.push(jobTitle);
+  }
+
+  const country = normalizeFilterValue(filters.country);
+  if (country !== undefined) {
+    clauses.push('LOWER(TRIM(country)) = LOWER(TRIM(?))');
+    params.push(country);
+  }
+
+  const salary = normalizeFilterValue(filters.salary);
+  if (salary !== undefined) {
+    clauses.push('salary = ?');
+    params.push(salary);
+  }
+
+  const whereClause = clauses.length > 0 ? ` WHERE ${clauses.join(' AND ')}` : '';
+
+  return {
+    query: `SELECT id, full_name, job_title, country, salary
+       FROM employees${whereClause}
+       ORDER BY id ASC`,
+    params
+  };
+}
+
 export function createEmployee(db, employee) {
   assertDatabase(db);
   assertEmployeeInput(employee);
@@ -74,16 +126,11 @@ export function getEmployeeById(db, id) {
   return mapRowToEmployee(row);
 }
 
-export function listEmployees(db) {
+export function listEmployees(db, filters = {}) {
   assertDatabase(db);
 
-  const rows = db
-    .prepare(
-      `SELECT id, full_name, job_title, country, salary
-       FROM employees
-       ORDER BY id ASC`
-    )
-    .all();
+  const { query, params } = buildListEmployeesQuery(filters);
+  const rows = db.prepare(query).all(...params);
 
   return mapRowsToEmployees(rows);
 }

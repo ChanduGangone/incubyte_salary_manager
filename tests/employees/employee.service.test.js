@@ -3,7 +3,12 @@ import os from 'node:os';
 import path from 'node:path';
 
 import { closeDatabase, getDatabase } from '../../src/db/index.js';
-import { createEmployee, deleteEmployee, updateEmployee } from '../../src/employees/employee.service.js';
+import {
+  createEmployee,
+  deleteEmployee,
+  listEmployees,
+  updateEmployee
+} from '../../src/employees/employee.service.js';
 import { ValidationError } from '../../src/errors/validation-error.js';
 
 describe('employee service', () => {
@@ -69,6 +74,23 @@ describe('employee service', () => {
         salary: 'five thousand'
       })
     ).toThrow(ValidationError);
+  });
+
+  it('lists employees with filters', () => {
+    createEmployee(db, {
+      fullName: 'Jane Doe',
+      jobTitle: 'Engineer',
+      country: 'India',
+      salary: 5000
+    });
+    createEmployee(db, {
+      fullName: 'John Doe',
+      jobTitle: 'Manager',
+      country: 'United States',
+      salary: 7000
+    });
+
+    expect(listEmployees(db, { country: 'India' })).toHaveLength(1);
   });
 
   it('allows employees from other countries', () => {
